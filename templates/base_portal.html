@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title or 'Portal' }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/glass.css">
+</head>
+<body class="{{ body_class or '' }}">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="{{ '/employee/dashboard' if nav_role == 'employee' else '/admin/dashboard' }}">
+                <img src="/static/images/company-logo.webp" alt="Company Logo" class="company-logo">
+                <span class="brand-sub">{{ 'Employee' if nav_role == 'employee' else (nav_role|upper) }}</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if nav_role == 'employee' %}
+                        <li class="nav-item"><a class="nav-link {{ 'active' if active_nav == 'dashboard' else '' }}" href="/employee/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link {{ 'active' if active_nav == 'services' else '' }}" href="/employee/modules"><i class="bi bi-grid"></i> Services</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link {{ 'active' if active_nav == 'dashboard' else '' }}" href="/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link {{ 'active' if active_nav == 'operations' else '' }}" href="/admin/modules"><i class="bi bi-grid"></i> Operations</a></li>
+                        {% if nav_role in ['admin', 'hr'] %}
+                            <li class="nav-item"><a class="nav-link {{ 'active' if active_nav == 'seed' else '' }}" href="/admin/seed-data"><i class="bi bi-database"></i> Seed Data</a></li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-custom">
+        {% if header_title %}
+            <h2 class="page-title">{{ header_title }}</h2>
+        {% endif %}
+        {% if header_subtitle %}
+            <p class="page-subtitle">{{ header_subtitle }}</p>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block page_scripts %}{% endblock %}
+</body>
+</html>

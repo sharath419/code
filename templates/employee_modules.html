@@ -1,0 +1,76 @@
+{% extends "base_portal.html" %}
+
+{% block content %}
+<section class="module-grid mb-3">
+    <article class="module-card">
+        <h5><i class="bi bi-person-circle"></i> Profile</h5>
+        <form id="profile-form">
+            <label class="form-label">Phone</label>
+            <input class="form-control mb-2" name="phone">
+            <label class="form-label">Address</label>
+            <textarea class="form-control mb-2" name="address" rows="2"></textarea>
+            <button class="btn btn-primary-gradient btn-sm" type="submit">Save Profile</button>
+        </form>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-bell"></i> Notifications</h5>
+        <button class="btn btn-glass btn-sm mb-2" id="refresh-notifications">Refresh</button>
+        <div id="notification-list"></div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-calendar-check"></i> Attendance Summary</h5>
+        <div class="soft-box" id="attendance-summary">Loading...</div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-journal-text"></i> Leave Balance</h5>
+        <div class="row">
+            <div class="col">
+                <div class="soft-box inline-metric">CL<strong id="bal-cl">0</strong></div>
+            </div>
+            <div class="col">
+                <div class="soft-box inline-metric">SL<strong id="bal-sl">0</strong></div>
+            </div>
+            <div class="col">
+                <div class="soft-box inline-metric">PL<strong id="bal-pl">0</strong></div>
+            </div>
+        </div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-receipt"></i> Submit Expense</h5>
+        <form id="expense-form">
+            <input class="form-control mb-2" name="category" placeholder="Category (Travel, Food, etc.)">
+            <input class="form-control mb-2" name="amount" type="number" min="0" step="0.01" placeholder="Amount">
+            <textarea class="form-control mb-2" name="description" rows="2" placeholder="Description"></textarea>
+            <button class="btn btn-success-gradient btn-sm" type="submit">Submit Expense</button>
+        </form>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-clock-history"></i> Expense History</h5>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead><tr><th>Category</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="expense-history"></tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-list-check"></i> Leave History</h5>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead><tr><th>Type</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+                <tbody id="leave-history"></tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/employee_modules.js"></script>
+{% endblock %}

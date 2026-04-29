@@ -1,0 +1,122 @@
+{% extends "base_portal.html" %}
+
+{% block content %}
+<section class="glass-card">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div>
+            <h5 class="mb-1">Employee Services</h5>
+            <p class="text-muted mb-0">Access profile, notifications, leave balance, expenses, and history modules.</p>
+        </div>
+        <a href="/employee/modules" class="btn btn-primary-gradient btn-sm">
+            <i class="bi bi-grid"></i> Open Services
+        </a>
+    </div>
+</section>
+
+<section class="row mb-4">
+    <div class="col-lg-4 mb-3 mb-lg-0">
+        <article class="profile-card h-100">
+            <div class="profile-name">{{ profile.name if profile else '--' }}</div>
+            <div class="profile-info">
+                {% if profile %}
+                    <strong>{{ profile.emp_id }}</strong><br>
+                    {{ profile.designation }} | {{ profile.department }}<br><br>
+                    <i class="bi bi-telephone me-1"></i>{{ profile.phone }}<br>
+                    <i class="bi bi-geo-alt me-1"></i>{{ profile.address }}<br><br>
+                    <strong>Experience:</strong> {{ profile.experience }} years<br>
+                    <strong>Salary:</strong> &#8377;{{ profile.salary }}<br>
+                    <span class="badge bg-success mt-2">{{ profile.status|upper }}</span>
+                {% else %}
+                    Loading...
+                {% endif %}
+            </div>
+        </article>
+    </div>
+    <div class="col-lg-8">
+        <div class="dashboard-grid">
+            <article class="kpi-card">
+                <div class="kpi-label"><i class="bi bi-calendar-check me-1"></i>Present Days</div>
+                <span class="kpi-value">{{ present_days }}</span>
+            </article>
+            <article class="kpi-card">
+                <div class="kpi-label"><i class="bi bi-calendar-x me-1"></i>Total Leaves</div>
+                <span class="kpi-value">{{ leave_count }}</span>
+            </article>
+            <article class="kpi-card">
+                <div class="kpi-label"><i class="bi bi-clock-history me-1"></i>Half Days</div>
+                <span class="kpi-value">{{ half_days }}</span>
+            </article>
+        </div>
+        <article class="kpi-card mt-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div>
+                    <div class="kpi-label"><i class="bi bi-wallet2 me-1"></i>Latest Salary</div>
+                    <span class="kpi-value">
+                        {% if latest_salary != '--' %}
+                            &#8377;{{ latest_salary }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </span>
+                </div>
+                <button class="btn btn-glass btn-sm" id="download-slip">
+                    <i class="bi bi-download"></i> Download Slip
+                </button>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="glass-card">
+    <h4 class="mb-3"><i class="bi bi-clock-history"></i> Attendance</h4>
+    <p class="text-muted mb-3">Log your daily check-in and check-out times.</p>
+    <div class="d-grid gap-2 d-md-flex">
+        <button class="btn btn-success-gradient" id="punch-in">
+            <i class="bi bi-arrow-down-circle"></i> Punch In
+        </button>
+        <button class="btn btn-danger-gradient" id="punch-out">
+            <i class="bi bi-arrow-up-circle"></i> Punch Out
+        </button>
+    </div>
+</section>
+
+<section class="glass-card">
+    <h4 class="mb-3"><i class="bi bi-file-earmark-text"></i> Leave Application</h4>
+    <form id="leave-form">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">From Date *</label>
+                <input type="date" class="form-control" name="from_date" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">To Date *</label>
+                <input type="date" class="form-control" name="to_date" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Reason *</label>
+            <textarea class="form-control" style="resize: vertical; min-height: 80px;" name="reason" placeholder="Please specify the reason for leave" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Leave Type *</label>
+            <select class="form-select" name="leave_type" required>
+                <option value="full">Full Day</option>
+                <option value="half">Half Day</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary-gradient">
+            <i class="bi bi-check-lg"></i> Submit Leave Request
+        </button>
+    </form>
+</section>
+
+<section class="glass-card">
+    <h4 class="mb-3"><i class="bi bi-megaphone"></i> Company Announcements</h4>
+    <div id="meeting-list"></div>
+    <p id="no-meetings" class="text-muted text-center mt-2 mb-0">No announcements yet.</p>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/employee.js"></script>
+{% endblock %}

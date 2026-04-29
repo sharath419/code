@@ -1,0 +1,64 @@
+/* Colorful theme for Employee Management System */
+body {
+    background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.container {
+    background: rgba(255,255,255,0.95);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    padding: 2.5rem 2rem;
+    margin-top: 3rem;
+}
+h1, h2, h4 {
+    color: #2d3a4b;
+    font-weight: 700;
+}
+.btn-primary {
+    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+    border: none;
+}
+.btn-success {
+    background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
+    border: none;
+    color: #222;
+}
+.btn-warning {
+    background: linear-gradient(90deg, #f857a6 0%, #ff5858 100%);
+    border: none;
+    color: #fff;
+}
+.btn-danger {
+    background: linear-gradient(90deg, #ff5858 0%, #f857a6 100%);
+    border: none;
+}
+.table {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.table th {
+    background: #43c6ac;
+    color: #fff;
+}
+.table td {
+    background: #f8ffae;
+}
+.form-label {
+    color: #185a9d;
+    font-weight: 600;
+}
+input, textarea, select {
+    border-radius: 8px !important;
+    border: 1px solid #43c6ac !important;
+}
+.alert {
+    border-radius: 8px;
+    font-weight: 500;
+}
+.navbar {
+    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+    border-radius: 0 0 18px 18px;
+    margin-bottom: 2rem;
+}

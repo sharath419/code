@@ -1,0 +1,67 @@
+{% extends "base_portal.html" %}
+
+{% block content %}
+<section class="glass-card text-center">
+    <h4 class="mb-3"><i class="bi bi-people-fill"></i> Add 50 Sample Employees</h4>
+    <p class="text-muted mb-4">
+        This action creates realistic sample employees across departments, roles, and salary bands.
+    </p>
+    <button class="btn btn-success-gradient btn-lg" id="seed-btn" onclick="seedEmployees()">
+        <i class="bi bi-plus-circle"></i> Generate 50 Employees
+    </button>
+    <div id="result" class="mt-4"></div>
+</section>
+
+<section class="glass-card">
+    <p class="mb-0 text-muted" style="line-height: 1.9;">
+        <strong class="text-dark">Generated Data Includes:</strong><br>
+        Employee ID range <code>EMP1000</code> to <code>EMP1049</code>.<br>
+        Realistic names, phone numbers, departments, and designations.<br>
+        Experience levels from 0 to 15 years.<br>
+        Salary bands from &#8377;25,000 to &#8377;100,000.<br>
+        Default password for generated users: <code>password123</code>.<br><br>
+        Existing employees are skipped automatically.
+    </p>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+function seedEmployees() {
+    const btn = document.getElementById('seed-btn');
+    const result = document.getElementById('result');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating...';
+    result.innerHTML = '';
+
+    fetch('/api/seed-employees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            result.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> <strong>Success:</strong> ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <p class="mt-3"><a href="/admin/dashboard" class="btn btn-primary-gradient">Go to Admin Dashboard</a></p>
+            `;
+            btn.innerHTML = '<i class="bi bi-plus-circle"></i> Generate 50 Employees';
+            btn.disabled = false;
+        } else {
+            result.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+            btn.innerHTML = '<i class="bi bi-plus-circle"></i> Generate 50 Employees';
+            btn.disabled = false;
+        }
+    })
+    .catch(error => {
+        result.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        btn.innerHTML = '<i class="bi bi-plus-circle"></i> Generate 50 Employees';
+        btn.disabled = false;
+    });
+}
+</script>
+{% endblock %}

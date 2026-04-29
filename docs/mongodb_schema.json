@@ -1,0 +1,61 @@
+{
+  "users": {
+    "_id": "ObjectId",
+    "username": "string",
+    "password": "string",
+    "role": "admin | employee"
+  },
+  "employees": {
+    "_id": "ObjectId",
+    "emp_id": "string",
+    "name": "string",
+    "phone": "string",
+    "department": "string",
+    "designation": "string",
+    "address": "string",
+    "experience": "int",
+    "status": "active | suspended",
+    "salary": "float"
+  },
+  "attendance": {
+    "_id": "ObjectId",
+    "emp_id": "string",
+    "date": "date",
+    "punch_in": "datetime",
+    "punch_out": "datetime",
+    "half_day": "bool"
+  },
+  "leaves": {
+    "_id": "ObjectId",
+    "emp_id": "string",
+    "from_date": "date",
+    "to_date": "date"
+  }
+}
+  "reason": str,
+  "status": "Pending" | "Approved" | "Rejected",
+  "half_day": bool,
+  "applied_on": datetime
+}
+
+# salary
+{
+  "_id": ObjectId,
+  "emp_id": str,
+  "month": str,
+  "gross": float,
+  "pf": float,
+  "esi": float,
+  "deductions": float,
+  "net": float,
+  "generated_on": datetime
+}
+
+# meetings
+{
+  "_id": ObjectId,
+  "title": str,
+  "message": str,
+  "created_on": datetime,
+  "read_by": [str] # emp_ids
+}

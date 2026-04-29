@@ -1,0 +1,285 @@
+{% extends "base_portal.html" %}
+
+{% block content %}
+<section class="glass-card">
+    <h5 class="mb-3"><i class="bi bi-funnel"></i> Filters</h5>
+    <form method="GET" action="/admin/dashboard">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label">Department</label>
+                <select class="form-select" name="department">
+                    <option value="">All</option>
+                    {% for dep in available_departments %}
+                        <option value="{{ dep }}" {{ 'selected' if selected_department == dep else '' }}>{{ dep }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">All</option>
+                    <option value="active" {{ 'selected' if selected_status == 'active' else '' }}>Active</option>
+                    <option value="offboarding" {{ 'selected' if selected_status == 'offboarding' else '' }}>Offboarding</option>
+                    <option value="inactive" {{ 'selected' if selected_status == 'inactive' else '' }}>Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">From Date</label>
+                <input class="form-control" type="date" name="from_date" value="{{ selected_from_date }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">To Date</label>
+                <input class="form-control" type="date" name="to_date" value="{{ selected_to_date }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button class="btn btn-primary-gradient btn-sm" type="submit"><i class="bi bi-search"></i> Apply</button>
+                <a class="btn btn-glass btn-sm" href="/admin/dashboard"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
+            </div>
+        </div>
+    </form>
+</section>
+
+<section class="glass-card">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div>
+            <h5 class="mb-1">Enterprise Operations</h5>
+            <p class="text-muted mb-0">Manage policies, reports, lifecycle, expenses, and audit controls.</p>
+        </div>
+        <a href="/admin/modules" class="btn btn-primary-gradient btn-sm">
+            <i class="bi bi-grid"></i> Open Operations
+        </a>
+    </div>
+</section>
+
+<section class="dashboard-grid mb-4">
+    <article class="kpi-card">
+        <div class="kpi-label"><i class="bi bi-people me-1"></i>Total Employees</div>
+        <span class="kpi-value">{{ kpi_employees }}</span>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-label"><i class="bi bi-check-circle me-1"></i>Present Today</div>
+        <span class="kpi-value">{{ kpi_present }}</span>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-label"><i class="bi bi-calendar-week me-1"></i>Pending Leaves</div>
+        <span class="kpi-value">{{ kpi_leaves }}</span>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-label"><i class="bi bi-cash-stack me-1"></i>Total Payroll</div>
+        <span class="kpi-value">&#8377;{{ kpi_payroll }}</span>
+    </article>
+</section>
+
+<section class="glass-card">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h4 class="mb-0"><i class="bi bi-people-fill"></i> Employee Directory</h4>
+        <button class="btn btn-success-gradient btn-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+            <i class="bi bi-plus-lg"></i> Add Employee
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="employee-table">
+            {% for emp in employee_rows %}
+                <tr>
+                    <td><strong>{{ emp.emp_id }}</strong></td>
+                    <td>{{ emp.name }}</td>
+                    <td>{{ emp.department }}</td>
+                    <td>{{ emp.designation if emp.get('designation') else '--' }}</td>
+                    <td>
+                        {% if emp.status == 'active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Suspended</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="glass-card">
+    <h4 class="mb-3"><i class="bi bi-megaphone"></i> Company Announcements</h4>
+    <form id="meeting-form" class="mb-3">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" placeholder="Announcement title" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" style="resize: vertical; min-height: 100px;" name="message" placeholder="Write an update for employees" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary-gradient"><i class="bi bi-send"></i> Publish</button>
+    </form>
+    <h5 class="mt-4 mb-3">Recent Announcements</h5>
+    <div id="meeting-list"></div>
+</section>
+
+<section class="glass-card">
+    <h4><i class="bi bi-calendar-check"></i> Attendance Today</h4>
+    <div id="attendance-table" class="mt-3">
+        {% if attendance_records %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Date</th>
+                            <th>Punch In</th>
+                            <th>Punch Out</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attendance_records %}
+                        <tr>
+                            <td><strong>{{ att.emp_id }}</strong></td>
+                            <td>{{ att.date }}</td>
+                            <td>
+                                {% if att.punch_in != '--' %}
+                                    {{ att.punch_in[11:19] if att.punch_in else '--' }}
+                                {% else %}
+                                    <span class="badge bg-danger">Not Punched</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if att.punch_out != '--' %}
+                                    {{ att.punch_out[11:19] if att.punch_out else '--' }}
+                                {% else %}
+                                    <span class="badge bg-warning">Not Punched</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if att.half_day %}
+                                    <span class="badge bg-warning">Half Day</span>
+                                {% else %}
+                                    <span class="badge bg-success">Full Day</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center mb-0">No attendance records for today.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="glass-card">
+    <h4><i class="bi bi-file-earmark-check"></i> Leave Approvals</h4>
+    <div id="leave-approvals" class="mt-3">
+        {% if leave_requests %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Reason</th>
+                            <th>Type</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td><strong>{{ leave.emp_id }}</strong></td>
+                            <td>{{ leave.from_date }}</td>
+                            <td>{{ leave.to_date }}</td>
+                            <td>{{ leave.reason }}</td>
+                            <td>
+                                {% if leave.half_day %}
+                                    <span class="badge bg-warning">Half Day</span>
+                                {% else %}
+                                    <span class="badge bg-info">Full Day</span>
+                                {% endif %}
+                            </td>
+                            <td><small>{{ leave.applied_on[:10] if leave.applied_on else '--' }}</small></td>
+                            <td>
+                                <button class="btn btn-sm btn-success-gradient approve-leave mb-1" data-leave-id="{{ leave.id }}">
+                                    <i class="bi bi-check-lg"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger-gradient reject-leave mb-1" data-leave-id="{{ leave.id }}">
+                                    <i class="bi bi-x-lg"></i> Reject
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center mb-0">No pending leave requests.</p>
+        {% endif %}
+    </div>
+</section>
+
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-plus"></i> Add New Employee</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-employee-form">
+          <div class="mb-3">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-control" name="name" placeholder="Full Name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Department *</label>
+            <input type="text" class="form-control" name="department" placeholder="IT, HR, Sales..." required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Designation *</label>
+            <input type="text" class="form-control" name="designation" placeholder="Developer, Manager..." required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone *</label>
+            <input type="tel" class="form-control" name="phone" placeholder="10-digit phone number" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address *</label>
+            <input type="text" class="form-control" name="address" placeholder="Full Address" required>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Experience (years) *</label>
+              <input type="number" class="form-control" name="experience" min="0" value="0" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Salary (&#8377;) *</label>
+              <input type="number" class="form-control" name="salary" min="0" step="1000" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password *</label>
+            <input type="password" class="form-control" name="password" placeholder="Temporary password" required>
+          </div>
+          <button type="submit" class="btn btn-success-gradient w-100"><i class="bi bi-check-lg"></i> Add Employee</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/admin.js"></script>
+{% endblock %}

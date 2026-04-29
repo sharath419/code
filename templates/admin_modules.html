@@ -1,0 +1,100 @@
+{% extends "base_portal.html" %}
+
+{% block content %}
+<section class="module-grid mb-3">
+    <article class="module-card">
+        <h5><i class="bi bi-bar-chart"></i> Reports</h5>
+        <div class="soft-box mb-2" id="report-overview">Loading overview...</div>
+        <div class="d-flex gap-2 mb-2">
+            <button class="btn btn-glass btn-sm" id="load-attendance-report">Attendance</button>
+            <button class="btn btn-glass btn-sm" id="load-payroll-report">Payroll</button>
+            <button class="btn btn-glass btn-sm" id="load-attrition-report">Attrition</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+                <tbody id="report-table"></tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-sliders"></i> Policies</h5>
+        <form id="attendance-policy-form" class="mb-3">
+            <label class="form-label">Shift Start</label>
+            <input class="form-control mb-2" name="shift_start" placeholder="09:30">
+            <label class="form-label">Shift End</label>
+            <input class="form-control mb-2" name="shift_end" placeholder="18:30">
+            <label class="form-label">Grace (minutes)</label>
+            <input class="form-control mb-2" type="number" name="grace_minutes" value="15">
+            <button class="btn btn-primary-gradient btn-sm" type="submit">Save Attendance Policy</button>
+        </form>
+        <form id="leave-policy-form">
+            <label class="form-label">CL / SL / PL</label>
+            <div class="row g-2 mb-2">
+                <div class="col"><input class="form-control" type="number" name="cl" value="12"></div>
+                <div class="col"><input class="form-control" type="number" name="sl" value="12"></div>
+                <div class="col"><input class="form-control" type="number" name="pl" value="18"></div>
+            </div>
+            <button class="btn btn-success-gradient btn-sm" type="submit">Save Leave Policy</button>
+        </form>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-person-gear"></i> Role Assignment</h5>
+        <form id="role-assign-form">
+            <label class="form-label">Employee ID</label>
+            <input class="form-control mb-2" name="emp_id" placeholder="EMP1001">
+            <label class="form-label">Role</label>
+            <select class="form-select mb-2" name="role">
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+                <option value="hr">HR</option>
+            </select>
+            <button class="btn btn-primary-gradient btn-sm" type="submit">Assign Role</button>
+        </form>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-person-check"></i> Onboarding / Offboarding</h5>
+        <form id="onboarding-form" class="mb-3">
+            <input class="form-control mb-2" name="emp_id" placeholder="Employee ID">
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="doc" name="documents_submitted"><label class="form-check-label" for="doc">Documents submitted</label></div>
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="asset" name="it_assets_allocated"><label class="form-check-label" for="asset">IT assets allocated</label></div>
+            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ori" name="orientation_completed"><label class="form-check-label" for="ori">Orientation completed</label></div>
+            <button class="btn btn-success-gradient btn-sm" type="submit">Update Onboarding</button>
+        </form>
+        <form id="offboarding-form">
+            <input class="form-control mb-2" name="emp_id" placeholder="Employee ID">
+            <input class="form-control mb-2" type="date" name="last_working_day">
+            <input class="form-control mb-2" name="reason" placeholder="Reason">
+            <button class="btn btn-danger-gradient btn-sm" type="submit">Initiate Offboarding</button>
+        </form>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-cash-coin"></i> Expense Approvals</h5>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead><tr><th>Emp</th><th>Category</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="expense-table"></tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="module-card">
+        <h5><i class="bi bi-shield-check"></i> Audit Logs</h5>
+        <button class="btn btn-glass btn-sm mb-2" id="load-audit">Refresh Logs</button>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead><tr><th>When</th><th>Action</th><th>Actor</th></tr></thead>
+                <tbody id="audit-table"></tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/admin_modules.js"></script>
+{% endblock %}
